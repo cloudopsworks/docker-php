@@ -1,6 +1,6 @@
 name: Continuous Integration
 env:
-  DOCKER_IMAGE: wyrihaximusnet/php
+  DOCKER_IMAGE: cloduopsworks/php
   DOCKER_BUILDKIT: 1
   DOCKER_IMAGE_REGISTRIES_SECRET_MAPPING: '{"ghcr.io":"GHCR_TOKEN","docker.io":"HUB_PASSCODE"}'
   DOCKER_CLI_EXPERIMENTAL: enabled
@@ -60,7 +60,7 @@ jobs:
     outputs:
       type: ${{ steps.image-type-matrix.outputs.type }}
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - id: image-type-matrix
         name: Generate Type
         run: |
@@ -74,7 +74,7 @@ jobs:
       exclude: ${{ steps.exclude-matrix.outputs.exclude }}
       exclude-push: ${{ steps.exclude-matrix.outputs.exclude-push }}
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - id: exclude-matrix
         name: Generate Exclude
         run: |
@@ -89,7 +89,7 @@ jobs:
     outputs:
       image: ${{ steps.image-matrix.outputs.image }}
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - id: image-matrix
         name: Generate Combined Image Matrix
         run: |
@@ -130,7 +130,7 @@ jobs:
       matrix:
         type: ${{ fromJson(needs.image-type-matrix.outputs.type) }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Lint Dockerfile-${{ matrix.type }}
         uses: docker://hadolint/hadolint:latest-debian
         with:
@@ -151,7 +151,7 @@ jobs:
         arch: ${{ fromJson(needs.supported-arch-matrix.outputs.arch) }}
         exclude: ${{ fromJson(needs.exclude-matrix.outputs.exclude) }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: dbhi/qus/action@main
       - run: mkdir ./docker-image/
       - uses: nick-invision/retry@v2
@@ -183,7 +183,7 @@ jobs:
         arch: ${{ fromJson(needs.supported-arch-matrix.outputs.arch) }}
         exclude: ${{ fromJson(needs.exclude-matrix.outputs.exclude) }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         if: contains(matrix.image, 'alpine')
       - uses: dbhi/qus/action@main
         if: contains(matrix.image, 'alpine')
@@ -214,7 +214,7 @@ jobs:
         arch: ${{ fromJson(needs.supported-arch-matrix.outputs.arch) }}
         exclude: ${{ fromJson(needs.exclude-matrix.outputs.exclude) }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: dbhi/qus/action@main
       - name: Download Images
         uses: actions/download-artifact@v2
@@ -253,7 +253,7 @@ jobs:
         arch: ${{ fromJson(needs.supported-arch-matrix.outputs.arch) }}
         exclude: ${{ fromJson(needs.exclude-matrix.outputs.exclude) }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: dbhi/qus/action@main
       - name: Download Images
         uses: actions/download-artifact@v2
@@ -302,7 +302,7 @@ jobs:
       - supported-arch-matrix
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: dbhi/qus/action@main
       - name: Download Images
         uses: actions/download-artifact@v2
